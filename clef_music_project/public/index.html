@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Website - Visitor Tracking Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+        }
+        .demo-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .demo-section h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        input {
+            width: 300px;
+            max-width: 100%;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .trackable {
+            background: #28a745;
+        }
+        .trackable:hover {
+            background: #1e7e34;
+        }
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ E-commerce Website</h1>
+            <p>Visitor Tracking & Notification System Demo</p>
+        </div>
+
+        <div class="info-box">
+            <strong>📧 How it works:</strong> When you visit this page, the system automatically tracks your visit and sends a notification to your email (if provided). Try the demo below!
+        </div>
+
+        <div class="demo-section">
+            <h3>🔍 Visitor Tracking Demo</h3>
+            <p>Enter your email or user ID to test the notification system:</p>
+            
+            <div class="form-group">
+                <label for="userEmail">Email Address:</label>
+                <input type="email" id="userEmail" placeholder="Enter your email address">
+            </div>
+            
+            <div class="form-group">
+                <label for="userId">User ID (optional):</label>
+                <input type="number" id="userId" placeholder="Enter your user ID">
+            </div>
+            
+            <button onclick="setUserAndTrack()">Set User Info & Track Visit</button>
+            <button onclick="clearUserInfo()">Clear User Info</button>
+            <button class="trackable" onclick="trackClick()">Track Click Event</button>
+        </div>
+
+        <div class="demo-section">
+            <h3>📊 How to Implement</h3>
+            <p>To add visitor tracking to your website, include this script:</p>
+            <div class="code-block">
+&lt;script src="/public/visitor-tracker.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+    // Optional: Set user information
+    VisitorTracker.setUserInfo({
+        email: 'user@example.com',
+        userId: 123
+    });
+&lt;/script&gt;
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🎯 API Endpoints</h3>
+            <p>The system provides these API endpoints:</p>
+            <ul>
+                <li><strong>POST /api/visitors/track</strong> - Track a visitor</li>
+                <li><strong>GET /api/visitors/stats</strong> - Get visitor statistics (admin only)</li>
+                <li><strong>GET /api/visitors/notifications/:userId</strong> - Get user notifications</li>
+                <li><strong>PATCH /api/visitors/notifications/:notificationId/read</strong> - Mark notification as read</li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h3>📱 Features</h3>
+            <ul>
+                <li>✅ Automatic visitor tracking on page load</li>
+                <li>✅ Email notifications to visitors</li>
+                <li>✅ WhatsApp notifications (if phone number provided)</li>
+                <li>✅ User identification via email or user ID</li>
+                <li>✅ Click and scroll event tracking (optional)</li>
+                <li>✅ Admin dashboard for visitor statistics</li>
+                <li>✅ Notification management system</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Include the visitor tracking script -->
+    <script src="/public/visitor-tracker.js"></script>
+    
+    <script>
+        function setUserAndTrack() {
+            const email = document.getElementById('userEmail').value;
+            const userId = document.getElementById('userId').value;
+            
+            if (!email && !userId) {
+                alert('Please enter either an email address or user ID');
+                return;
+            }
+            
+            const userInfo = {};
+            if (email) userInfo.email = email;
+            if (userId) userInfo.userId = parseInt(userId);
+            
+            // Set user info and track
+            VisitorTracker.setUserInfo(userInfo);
+            VisitorTracker.track(userInfo);
+            
+            alert('User info set and visit tracked! Check your email for notifications.');
+        }
+        
+        function clearUserInfo() {
+            VisitorTracker.clearUserInfo();
+            document.getElementById('userEmail').value = '';
+            document.getElementById('userId').value = '';
+            alert('User info cleared!');
+        }
+        
+        function trackClick() {
+            const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+            VisitorTracker.track(userInfo);
+            alert('Click event tracked!');
+        }
+    </script>
+</body>
+</html>
